@@ -74,11 +74,12 @@ function updateUI() {
         
         const li = document.createElement('li');
         li.className = "flex justify-between items-center p-3 bg-white rounded shadow-sm border";
+
         li.innerHTML = `
             <span>${exp.name}</span> 
             <div class="flex items-center gap-4">
                 <span class="font-bold text-red-500">${symbol}${convertedAmount}</span>
-                <button onclick="deleteExpense(${index})" class="text-gray-400 hover:text-red-600 text-lg">🗑️</button>
+                <button onclick="deleteExpense(${index})" class="text-gray-600 hover:text-red-600 text-lg">🗑️</button>
             </div>
         `;
         expenseList.appendChild(li);
@@ -121,7 +122,6 @@ currencyBtn.addEventListener('click', async () => {
     if (!isUSD) {
         currencyBtn.textContent = "⏳ Fetching Rate...";
         try {
-
             const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
             const data = await response.json();
             
