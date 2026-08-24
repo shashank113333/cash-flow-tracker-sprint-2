@@ -19,7 +19,6 @@ const downloadPdfBtn = document.getElementById('download-pdf-btn');
 const currencyBtn = document.getElementById('currency-btn'); 
 const ctx = document.getElementById('myChart'); 
 
-
 function loadData() {
     const savedSalary = JSON.parse(localStorage.getItem('savedSalary'));
     const savedExpenses = JSON.parse(localStorage.getItem('savedExpenses'));
@@ -63,7 +62,6 @@ function deleteExpense(index) {
     updateUI(); 
 }
 
-
 function updateUI() {
     let totalExpensesSum = 0;
     expenseList.innerHTML = '';
@@ -88,7 +86,6 @@ function updateUI() {
     
     const remainingBalance = totalSalary - totalExpensesSum;
     
-
     if (totalSalary > 0 && remainingBalance < (totalSalary * 0.10)) {
         warningMsg.classList.remove('hidden');
         displayBalance.classList.replace('text-blue-700', 'text-red-600');
@@ -97,7 +94,6 @@ function updateUI() {
         displayBalance.classList.replace('text-red-600', 'text-blue-700');
     }
     
-
     displaySalary.textContent = `${symbol}${(totalSalary * exchangeRate).toFixed(isUSD ? 2 : 0)}`;
     displayExpenses.textContent = `${symbol}${(totalExpensesSum * exchangeRate).toFixed(isUSD ? 2 : 0)}`;
     displayBalance.textContent = `${symbol}${(remainingBalance * exchangeRate).toFixed(isUSD ? 2 : 0)}`;
@@ -121,15 +117,13 @@ function updateChart(balance, expensesSum) {
     });
 }
 
-
 currencyBtn.addEventListener('click', async () => {
     if (!isUSD) {
         currencyBtn.textContent = "⏳ Fetching Rate...";
         try {
-            
-            const response = await fetch('https://api.frankfurter.app/latest?from=USD&to=INR');
+
+            const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
             const data = await response.json();
-            
             
             exchangeRate = 1 / data.rates.INR; 
             isUSD = true;
@@ -180,4 +174,5 @@ downloadPdfBtn.addEventListener('click', () => {
     doc.save("CashFlow_Report.pdf");
 });
 
+// Start App
 loadData();
