@@ -74,12 +74,11 @@ function updateUI() {
         
         const li = document.createElement('li');
         li.className = "flex justify-between items-center p-3 bg-white rounded shadow-sm border";
-
         li.innerHTML = `
             <span>${exp.name}</span> 
             <div class="flex items-center gap-4">
                 <span class="font-bold text-red-500">${symbol}${convertedAmount}</span>
-                <button onclick="deleteExpense(${index})" class="text-gray-600 hover:text-red-600 text-lg">🗑️</button>
+                <button onclick="deleteExpense(${index})" class="text-gray-600 hover:text-red-700 text-lg">🗑️</button>
             </div>
         `;
         expenseList.appendChild(li);
@@ -129,8 +128,8 @@ currencyBtn.addEventListener('click', async () => {
             isUSD = true;
             
             currencyBtn.textContent = "🔄 Revert to INR";
-            currencyBtn.classList.replace('bg-yellow-500', 'bg-green-500');
-            currencyBtn.classList.replace('hover:bg-yellow-600', 'hover:bg-green-600');
+            currencyBtn.classList.replace('bg-indigo-700', 'bg-emerald-700');
+            currencyBtn.classList.replace('hover:bg-indigo-800', 'hover:bg-emerald-800');
         } catch (error) {
             showError("API Error: Please check internet connection.");
             currencyBtn.textContent = "💵 Convert to USD";
@@ -139,8 +138,8 @@ currencyBtn.addEventListener('click', async () => {
         isUSD = false; 
         exchangeRate = 1;
         currencyBtn.textContent = "💵 Convert to USD";
-        currencyBtn.classList.replace('bg-green-500', 'bg-yellow-500');
-        currencyBtn.classList.replace('hover:bg-green-600', 'hover:bg-yellow-600');
+        currencyBtn.classList.replace('bg-emerald-700', 'bg-indigo-700');
+        currencyBtn.classList.replace('hover:bg-emerald-800', 'hover:bg-indigo-800');
     }
     updateUI(); 
 });
@@ -174,5 +173,5 @@ downloadPdfBtn.addEventListener('click', () => {
     doc.save("CashFlow_Report.pdf");
 });
 
-// Start App
+
 loadData();

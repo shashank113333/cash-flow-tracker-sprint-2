@@ -3,95 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A simple Cash-Flow Tracker to manage income and expenses.">
     <title>Cash-Flow Tracker</title>
-    <meta name="description" content="A simple Cash-Flow Tracker to manage your salary and daily expenses.">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="data:,">
 
-    <link rel="stylesheet" href="styles.css">
+    <script defer src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script defer src="script.js"></script>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800 flex flex-col min-h-screen">
+<body class="bg-gray-100 min-h-screen flex flex-col font-sans text-gray-900">
 
-    <header class="bg-blue-600 text-white p-5 shadow-md">
-        <nav class="max-w-4xl mx-auto">
-            <h1 class="text-2xl font-bold text-center tracking-wide">Cash-Flow Tracker</h1>
-        </nav>
+    <header class="bg-blue-600 text-white py-4 shadow-md w-full">
+        <h1 class="text-2xl font-bold text-center tracking-wide">Cash-Flow Tracker</h1>
     </header>
 
-    <main class="flex-grow w-full max-w-2xl mx-auto bg-white p-6 my-8 rounded-lg shadow-lg border">
-        <div id="error-msg" class="hidden mb-4 p-3 bg-red-100 text-red-700 rounded text-sm font-semibold"></div>
-        <div id="warning-msg" class="hidden mb-4 p-3 bg-red-600 text-white rounded text-center font-bold animate-pulse">
-             ⚠️ CRITICAL: Remaining balance has dropped below 10% of Total Salary!
+    <main class="flex-grow w-full max-w-2xl mx-auto bg-white p-6 my-8 rounded-lg shadow-lg border border-gray-200">
+
+
+        <section class="mb-8 p-4 border rounded-md bg-gray-50">
+            <h2 class="text-lg font-semibold mb-4 text-gray-800">1. Set Total Salary</h2>
+            <div class="flex gap-4">
+                <input type="number" id="salary-input" placeholder="Enter Total Salary" 
+                    class="border border-gray-300 p-2 rounded flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button id="set-salary-btn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors font-semibold">Set Salary</button>
+            </div>
+        </section>
+
+
+        <div id="error-msg" class="hidden mb-4 p-3 bg-red-100 text-red-700 rounded border border-red-200 font-medium text-sm"></div>
+        <div id="warning-msg" class="hidden mb-4 p-3 bg-yellow-100 text-yellow-800 rounded border border-yellow-200 font-medium text-sm">
+            ⚠️ Warning: Your balance is below 10% of your total salary!
         </div>
 
-        <div class="mb-6 p-4 bg-gray-50 rounded border">
-            <h2 class="font-semibold mb-2 text-gray-700">1. Set Total Salary</h2>
-            <div class="flex gap-2">
-                <input type="number" id="salary-input" placeholder="Enter Total Salary" class="border p-2 rounded flex-1 outline-none focus:border-blue-500">
-                <button id="set-salary-btn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Set Salary</button>
-            </div>
-        </div>
-        <div class="mb-6 p-4 bg-gray-50 rounded border">
-            <h2 class="font-semibold mb-2 text-gray-700">2. Add Expense</h2>
-            <div class="flex gap-2 mb-2">
-                <input type="text" id="expense-name" placeholder="Expense Name (e.g. Rent)" class="border p-2 rounded flex-1 outline-none focus:border-red-500">
-                <input type="number" id="expense-amount" placeholder="Amount" class="border p-2 rounded w-1/3 outline-none focus:border-red-500">
-            </div>
-            <button id="add-expense-btn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-full transition font-semibold">Add Expense</button>
-        </div>
 
-        <div class="mb-6">
-            <h3 class="font-semibold mb-3 border-b pb-2 text-gray-700">Summary Dashboard</h3>
-            <div class="grid grid-cols-3 gap-4 text-center">
-                <div class="bg-green-100 p-4 rounded shadow-sm border border-green-200">
+        <section class="mb-8 p-4 border rounded-md bg-gray-50">
+            <h2 class="text-lg font-semibold mb-4 text-gray-800">2. Add Expense</h2>
+            <div class="flex gap-4 mb-4">
+                <input type="text" id="expense-name" placeholder="Expense Name (e.g. Rent)" 
+                    class="border border-gray-300 p-2 rounded flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="number" id="expense-amount" placeholder="Amount" 
+                    class="border border-gray-300 p-2 rounded w-1/3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <button id="add-expense-btn" class="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800 w-full transition-colors font-semibold">Add Expense</button>
+        </section>
+
+
+        <section class="mb-8 p-4 border rounded-md bg-gray-50">
+            <h2 class="text-lg font-semibold mb-4 text-gray-800">Summary Dashboard</h2>
+            <div class="grid grid-cols-3 gap-4 mb-6 text-center">
+                <div class="p-3 bg-white border rounded shadow-sm">
                     <p class="text-xs text-gray-600 mb-1 uppercase tracking-wider font-semibold">Total Salary</p>
-                    <p class="text-xl font-bold text-green-700" id="display-salary">₹0</p>
+                    <p id="display-salary" class="text-lg font-bold text-gray-800">₹0</p>
                 </div>
-                <div class="bg-red-100 p-4 rounded shadow-sm border border-red-200">
+                <div class="p-3 bg-white border rounded shadow-sm">
                     <p class="text-xs text-gray-600 mb-1 uppercase tracking-wider font-semibold">Total Expenses</p>
-                    <p class="text-xl font-bold text-red-700" id="display-expenses">₹0</p>
+                    <p id="display-expenses" class="text-lg font-bold text-red-600">₹0</p>
                 </div>
-                <div class="bg-blue-100 p-4 rounded shadow-sm border border-blue-200">
-                    <p class="text-xs text-gray-600 mb-1 uppercase tracking-wider font-semibold">Remaining Balance</p>
-                    <p class="text-xl font-bold text-blue-700" id="display-balance">₹0</p>
+                <div class="p-3 bg-white border rounded shadow-sm">
+                    <p class="text-xs text-gray-600 mb-1 uppercase tracking-wider font-semibold">Balance</p>
+                    <p id="display-balance" class="text-lg font-bold text-blue-700">₹0</p>
                 </div>
             </div>
+
+            <h3 class="font-semibold text-gray-700 mb-3 border-b pb-2">Expense History</h3>
+            <ul id="expense-list" class="space-y-2 max-h-60 overflow-y-auto mb-4">
+
+            </ul>
+        </section>
+
+        <div class="flex gap-4 mb-8">
+            <button id="download-pdf-btn" class="bg-blue-600 text-white px-4 py-2 rounded flex-1 hover:bg-blue-700 shadow-md font-bold transition-all">📄 Download PDF</button>
+
+            <button id="currency-btn" class="bg-indigo-700 text-white px-4 py-2 rounded flex-1 hover:bg-indigo-800 shadow-md font-bold transition-all">💵 Convert to USD</button>
         </div>
-
-      
-        <div>
-            <h2 class="font-semibold mb-3 border-b pb-2 text-gray-700">Expense History</h2>
-            <ul id="expense-list" class="space-y-3"></ul>
+        <div class="w-full max-w-sm mx-auto p-4 border rounded-md bg-white shadow-sm">
+            <canvas id="myChart"></canvas>
         </div>
-
-    <div class="mb-6 p-4 bg-white rounded-lg shadow border text-center">
-        <h3 class="font-semibold mb-2 text-gray-700">Financial Chart</h3>
-    <div class="flex justify-center">
-
-    <div style="width: 300px; height: 300px;">
-        <canvas id="myChart"></canvas>
-    </div>
-    </div>
-    </div>
-
-    <div class="flex gap-4 mb-6">
-        <button id="download-pdf-btn" class="bg-gray-800 text-white px-4 py-2 rounded flex-1 hover:bg-gray-900 shadow">
-
-            📄 Download PDF Report
-        </button>
-        <button id="currency-btn" class="bg-yellow-500 text-white px-4 py-2 rounded flex-1 hover:bg-yellow-600 shadow">
-            💵 Convert to USD
-        </button>
-    </div>
     </main>
-
-    <footer class="bg-gray-800 text-white text-center p-4 text-sm mt-auto">
-        <p>© 2026 Prodesk IT - Sprint 2 Deliverable</p>
+    <footer class="bg-gray-800 text-gray-300 py-3 text-center text-sm w-full mt-auto">
+        &copy; 2026 Cash-Flow Tracker | Built for Sprint 2
     </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="script.js"></script>
-
 </body>
 </html>
